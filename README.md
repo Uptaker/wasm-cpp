@@ -38,3 +38,16 @@ If it compiles, that means WASM is successfully installed!
 ```bash
 emcc hello_world/hello.cpp
 ```
+
+If you compile the `hello.cpp` using g++/gcc, notice how the outputs are the same:
+```bash
+./hello.out
+"Hello world!"
+```
+
+```bash
+node ./a.out.js
+"Hello world!"
+```
+
+In this case, WASM is essentially a wrapper, which allows binary code (.wasm) to be executed by JavaScript, and therefore can be invoked using an HTML file.
