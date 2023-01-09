@@ -13,17 +13,22 @@
         }
 
         function multiply() {
-            console.log(num1.value, num2.value)
-            const result = Module.ccall('multiply', 'number', ['number', 'number'], [num1.value, num2.value])
-            console.log(result)
+            let result = Module.ccall('multiply', 'number', ['number', 'number'], [num1.value, num2.value])
+            console.log('ccall', result)
+
+            result = cwrapMultiply(num1.value, num2.value)
+
+            console.log('cwrap', result)
         }
+
+        const cwrapMultiply = Module.cwrap('multiply', 'number', ['number', 'number'])
 
     </script>
     <button onclick="main()">Main function, 3 + 5</button>
 
     <input type="number" id="num1">
     <input type="number" id="num2">
-    <button onclick="multiply()">Trigger multiply()</button>
+    <button onclick="multiply()">ccall multiply()</button>
 
 </body>
 </html>
