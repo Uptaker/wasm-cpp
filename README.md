@@ -25,3 +25,8 @@ cd emsdk && ./emsdk install latest
 5. Check installation using `emcc -v`
 
 **Success!**
+
+You may need to re-source `emcc` for every new terminal to run the compiler, do so again using
+```bash
+source "[EMSDK_ROOT]/emsdk_env.sh"
+```
