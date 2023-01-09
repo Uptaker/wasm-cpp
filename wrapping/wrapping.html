@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CCall/CWrap</title>
+    <script src="wrapping.js"></script>
+</head>
+<body>
+    <script>
+        function main() {
+            const result = Module.ccall('main', 'number', null, null)
+            console.log(result)
+        }
+
+        function multiply() {
+            console.log(num1.value, num2.value)
+            const result = Module.ccall('multiply', 'number', ['number', 'number'], [num1.value, num2.value])
+            console.log(result)
+        }
+
+    </script>
+    <button onclick="main()">Main function, 3 + 5</button>
+
+    <input type="number" id="num1">
+    <input type="number" id="num2">
+    <button onclick="multiply()">Trigger multiply()</button>
+
+</body>
+</html>
