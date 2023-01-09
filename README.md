@@ -30,3 +30,11 @@ You may need to re-source `emcc` for every new terminal to run the compiler, do 
 ```bash
 source "[EMSDK_ROOT]/emsdk_env.sh"
 ```
+
+## Test WASM on the "Hello World" program
+
+If it compiles, that means WASM is successfully installed!
+
+```bash
+emcc hello_world/hello.cpp
+```
