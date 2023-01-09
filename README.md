@@ -51,3 +51,9 @@ node ./a.out.js
 ```
 
 In this case, WASM is essentially a wrapper, which allows binary code (.wasm) to be executed by JavaScript, and therefore can be invoked using an HTML file.
+
+## Common emcc parameters
+
+- `--help` manual
+- `-o <file> output file
+- `-s[OPTION]` switch an option, eg `-s NO_EXIT_RUNTIME=1` for not exiting the runtime, or `-s EXPORTED_RUNTIME_METHODS=[ccall]` for specifying export functions.
