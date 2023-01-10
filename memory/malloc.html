@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Memory & malloc</title>
+</head>
+<body>
+    <script>
+        let exports
+
+        // 64kB fixed size blocks
+        let memory = new WebAssembly.Memory({
+            initial: 256,
+            maximum: 512
+        })
+
+        // memory.wasm compiled with malloc.cpp
+        WebAssembly.instantiateStreaming(fetch("memory.wasm"), {
+            js: {
+                mem: memory,
+            },
+            env: {
+                emscripten_resize_heap: (delta) => memory.grow(delta) // callback on how to resize heap
+            }
+            }).then(r => {
+                exports = r.instance.exports
+                memory = r.instance.exports.memory // updating our memory pointer
+            })
+
+        function getSum() {
+            const size = 5
+            const pointer = exports.wasmmalloc(4 * size)
+            const array = new Uint32Array(memory.buffer, pointer)
+            for (let i = 0; i < size; i++) {
+                array[i] = 5;
+            }
+
+            console.log(exports.sum(pointer, size))
+            exports.wasmfree(pointer)
+        }
+
+        function getHello() {
+            const pointer = exports.hello()
+            const bytes = new Uint8Array(memory.buffer, pointer)
+            let length = 0
+            while (bytes[length] != 0) length++
+            const str = new TextDecoder("utf8").decode(bytes.slice(0, length))
+
+            console.log(str)
+            exports.wasmfree(pointer)
+        }
+
+        function encodeArray(array, length, sizeof = 1) {
+            let pointer, output
+            if (sizeof == 8) {
+                // TODO
+            }
+        }
+
+    </script>
+
+    <input type="number" id="num">
+    <button onclick="getSum()">call sum()</button>
+    <button onclick="getHello()">Hello!</button>
+
+</body>
+</html>
