@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Memory</title>
+</head>
+<body>
+    <script>
+        let exports
+
+        // 64kB fixed size blocks
+        let memory = new WebAssembly.Memory({
+            initial: 256,
+            maximum: 512
+        })
+
+        WebAssembly.instantiateStreaming(fetch("memory.wasm"), {
+            js: {mem: memory}
+            }) .then(r => {
+                exports = r.instance.exports
+                memory = r.instance.exports.memory // updating our memory pointer
+            })
+
+        function getSum() {
+            const array = new Uint32Array(memory.buffer)
+            for (let i = 0; i < 3; i++) {
+                array[i] = 5;
+            }
+
+            console.log(exports.sum(array, 3))
+        }
+
+        function getHello() {
+            const pointer = exports.hello()
+            const bytes = new Uint8Array(memory.buffer, pointer)
+            let length = 0
+            while (bytes[length] != 0) length++
+            const str = new TextDecoder("utf8").decode(bytes.slice(0, length))
+
+            console.log(str)
+        }
+
+    </script>
+
+    <input type="number" id="num">
+    <button onclick="getSum()">call sum()</button>
+    <button onclick="getHello()">Hello!</button>
+
+</body>
+</html>
