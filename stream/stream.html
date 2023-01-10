@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Streaming</title>
+</head>
+<body>
+    <script>
+        let exports
+
+        WebAssembly.instantiateStreaming(fetch('stream.wasm'), {}).then(r => exports = r.instance.exports)
+        
+        function toBinary() {
+            const binary = exports.dec2bin(num.value)
+            output.innerHTML = binary
+        }
+
+        function toDecimal() {
+            const decimal = exports.bin2dec(num.value)
+            output.innerHTML = decimal
+        }
+
+    </script>
+    <input type="number" id="num">
+    <button onclick="toBinary()">Decimal to Binary</button>
+    <button onclick="toDecimal()">Binary to Decimal</button>
+
+    <div id="output"></div>
+
+</body>
+</html>
