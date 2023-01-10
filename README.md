@@ -1,4 +1,4 @@
-# wasm-cpp
+# WebAssembly for C++
 
 ## WASM installation
 
@@ -50,19 +50,19 @@ node ./a.out.js
 "Hello world!"
 ```
 
-In this case, WASM is essentially a wrapper, which allows binary code (.wasm) to be executed by JavaScript, and therefore can be invoked using an HTML file.
+In this case, WASM is essentially a wrapper, which allows binary code (.wasm) to be executed by JavaScript, and therefore can be invoked using an HTML file or JS.
 
 ## Common emcc parameters
 
-- `--help` manual
 - `-o <file> output file
 - `-s[OPTION]` switch an option, eg `-s NO_EXIT_RUNTIME=1` for not exiting the runtime, or `-s EXPORTED_RUNTIME_METHODS=[ccall]` for specifying export functions.
+- `--help` manual
 
 ## Calling C++ functions
 
-TODO C++ calling bit (from compiled .js files)
+TODO C++ calling bit (from compiled .js files) using ccall and cwrap
 
-## WASM Streaming
+## A better way to call C++ functions - WASM Streaming
 
 An easier and more natural way of calling functions is to also *stream* the `.wasm` files. This way, JS can use WASM functions and there is no need for using the compiled `.js`.
 
@@ -77,4 +77,6 @@ An example is seen under the `streaming` directory.
 ```bash
 emcc main.cpp utils.cpp -o output.js
 ```
+
+See the `memory` folder and how `memory.cpp` imports `malloc.cpp` functions.
 
