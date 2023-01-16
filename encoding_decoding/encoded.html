@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
-    <title>Memory, free & malloc</title>
+    <title>Encoding/decoding</title>
 </head>
 <body>
     <script>
@@ -13,7 +13,6 @@
             maximum: 512
         })
 
-        // memory.wasm compiled with malloc.cpp
         WebAssembly.instantiateStreaming(fetch("encoded.wasm"), {
             js: {
                 mem: memory,
