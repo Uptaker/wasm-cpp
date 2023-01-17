@@ -7,7 +7,7 @@
 
 Emscripten is a compiler that can compile any language that uses LLVM, including C and C++, into WebAssembly. This enables such languages to run using the WASM runtime and even convert whole codebases and programs (Such as Qt-based desktop programs) or even games, such as [Doom 3](https://wasm.continuation-labs.com/d3demo/) - to be able to run on the browser or elsewhere.
 
-Behind the hood, it uses the LLVM project's `clang` compiler to compile C/C++ to WASM. Using it requires installation of the `emcc` compiler, which can be used to generate `.js` and `.wasm` files.  
+Behind the hood, it uses the LLVM project's `clang` compiler to compile C/C++ to WASM. Using it requires installation of the `emcc` compiler, which is part of the EMSDK toolkit and can be used to generate `.js` and `.wasm` files.  
 ## Emscripten installation
 
 1. First, clone the official WASM compiler repository:
@@ -30,7 +30,10 @@ cd emsdk && ./emsdk install latest
 
 4. Source the required environment variables (as said during installation)
 
-5. Check installation using `emcc -v`
+5. Check installation:
+```bash
+emcc -v
+```
 
 **Success!**
 
@@ -38,10 +41,11 @@ You may need to re-source `emcc` for every new terminal to run the compiler, do 
 ```bash
 source "[EMSDK_ROOT]/emsdk_env.sh"
 ```
+Where [EMSDK_ROOT] is the installation root directory.
 
 ## Test WASM on the "Hello World" program
 
-If it compiles, that means WASM is successfully installed!
+If it compiles, that means Emscripten is successfully installed!
 
 ```bash
 emcc hello_world/hello.cpp
@@ -58,7 +62,7 @@ node ./a.out.js
 "Hello world!"
 ```
 
-In this case, WASM is essentially a wrapper, which allows binary code (.wasm) to be executed by JavaScript, and therefore can be invoked using an HTML file or JS.
+In this case, the `.js` file is essentially a wrapper, which allows binary code (.wasm) to be executed by JavaScript, and therefore can be invoked using an HTML file or JS.
 
 ## Common emcc parameters
 
