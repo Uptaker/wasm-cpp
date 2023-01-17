@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Exporting JS to C++</title>
+</head>
+<body>
+    <script>
+        let exports
+
+        // 64kB fixed size blocks
+        let memory = new WebAssembly.Memory({
+            initial: 256,
+            maximum: 512
+        })
+
+        // memory.wasm compiled with malloc.cpp
+        WebAssembly.instantiateStreaming(fetch("export.wasm"), {
+            js: {
+                mem: memory,
+            },
+            env: {
+                clientTime: () => 100,
+                logger: logger,
+                emscripten_resize_heap: (delta) => memory.grow(delta) // callback on how to resize heap
+            }
+            }).then(r => {
+                exports = r.instance.exports
+                memory = r.instance.exports.memory // updating our memory pointer
+            })
+        
+        function logger(proportion) {
+            console.log(proportion * 100)
+        }
+
+        function getSum() {
+            const size = 5
+            const pointer = exports.wasmmalloc(4 * size)
+            const array = new Uint32Array(memory.buffer, pointer)
+            for (let i = 0; i < size; i++) {
+                array[i] = 5;
+            }
+
+            console.log(exports.sum(pointer, size))
+            exports.wasmfree(pointer)
+        }
+
+        function getString() {
+            const str = decodeString(exports.randStrings(40))
+            console.log(str)
+            exports.wasmfree(pointer)
+        }
+
+        function encodeArray(array, length, sizeof = 1) {
+            let pointer, output
+            if (sizeof == 8) {
+                pointer = exports.wasmmalloc(length * 8)
+                output = new BigUint64Array(memory.buffer, pointer)
+            } else if (sizeof == 4) {
+                pointer = exports.wasmmalloc(length * 4)
+                output = new Uint32Array(memory.buffer, pointer)
+
+            } else {
+                pointer = exports.wasmmalloc(length)
+                output = new Uint8Array(memory.buffer, pointer)
+            }
+
+            for (let i = 0; i < length; i++) {
+                output[i] = array[i]
+            }
+
+            return pointer
+        }
+
+        function decodeArray(pointer, length) {
+            return new Uint8Array(memory.buffer).slice(pointer, pointer + length)
+        }
+
+        // decoding a string where we know the length
+        function decodeString(pointer, length) {
+            return new TextDecoder("UTF8").decode(decodeArray(pointer, length))
+        }
+
+        function decodeString(pointer) {
+            const bytes = new Uint8Array(memory.buffer, pointer)
+            let length = 0
+            while (bytes[length] != 0) length++
+            return new TextDecoder("UTF8").decode(bytes.slice(0, length))
+        }
+
+    </script>
+
+    <input type="number" id="num">
+    <button onclick="getString()">Call WASM, use some JS functions, and then fetch the result again in JS!</button>
+    <button onclick="getHello()">Hello!</button>
+
+</body>
+</html>
