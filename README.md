@@ -1,6 +1,14 @@
 # WebAssembly for C++
 
-## WASM installation
+## Emscripten
+
+1. Separate LLVM section later outside of this repo, TODO
+
+
+Emscripten is a compiler that can compile any language that uses LLVM, including C and C++, into WebAssembly. This enables such languages to run using the WASM runtime and even convert whole codebases and programs (Such as Qt-based desktop programs) or even games, such as [Doom 3](https://wasm.continuation-labs.com/d3demo/) - to be able to run on the browser or elsewhere.
+
+Behind the hood, it uses the LLVM project's `clang` compiler to compile C/C++ to WASM. Using it requires installation of the `emcc` compiler, which can be used to generate `.js` and `.wasm` files.  
+## Emscripten installation
 
 1. First, clone the official WASM compiler repository:
 
