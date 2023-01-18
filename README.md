@@ -64,7 +64,16 @@ node ./a.out.js
 
 In this case, the `.js` file is essentially a wrapper, which allows binary code (.wasm) to be executed by JavaScript, and therefore can be invoked using an HTML file or JS.
 
-## Common emcc parameters
+## Compiling C/C++ and common emcc parameters
+
+Compiling C/C++ requires adding the following header package in each file:
+```cpp
+#include <emscripten.h>
+```
+
+To preserve functions outside of `main()`, the `EMSCRIPTEN_KEEPALIVE` macro is required. This tells the compiler to export it for usage in your `.wasm` file.
+
+Your local IDE may show warnings or errors, but emcc will recognize it and compile it successfully.
 
 - `-o <file> output file
 - `-s[OPTION]` switch an option, eg `-s NO_EXIT_RUNTIME=1` for not exiting the runtime, or `-s EXPORTED_RUNTIME_METHODS=[ccall]` for specifying export functions.
@@ -72,7 +81,55 @@ In this case, the `.js` file is essentially a wrapper, which allows binary code 
 
 ## Calling C++ functions
 
-TODO C++ calling bit (from compiled .js files) using ccall and cwrap
+### A note about C++ vs C
+
+The only exceptin with C++ is that, unlike C, function names are mangled during compilation, which means we need to use `extern "C"` in front of a function to keep it.
+
+A developer friendly way to export C++ functions is to define a `EXTERN` macro, like this:
+```cpp
+#define EXTERN extern "C
+```
+
+and then just pass it before the exported function, like this:
+```cpp
+EXTERN EMSCRIPTEN_KEEPALIVE
+void log(string message) {
+	cout << message << endl;
+}
+```
+
+### Calling functions
+
+The traditional way of calling C/C++ functions is to import the compiled `.js` file and call either `cwrap()` or `ccall()`
+
+An example of their usages is present in the **wrapping** directory.
+
+`ccall()` directly calls the compiled C/C++ function.
+
+```js
+const result = Module.ccall('multiply', 'number', ['number', 'number'], [num1.value, num2.value])
+```
+
+`cwrap()` also directly calls the compiled C/C++ function, but allows you to wrap it, which is more useful when repeatedly called
+```js
+const cwrapMultiply = Module.cwrap('multiply', 'number', ['number', 'number'])
+const result = cwrapMultiply(num1.value, num2.value)
+```
+These methods require you to explicitly pass the parameter types, as well as the return value in JavaScript.
+
+Both of these call the equivalent C++ function:
+```cpp
+EXTERN EMSCRIPTEN_KEEPALIVE
+int multiply(int a, int b) {
+    return a * b;
+}
+```
+
+Before compilation:
+- `EMSCRIPTEN_KEEPALIVE` macro is required to be in front of functions.
+- pass `NO_EXIT_RUNTIME=1 -s EXPORTED_RUNTIME_METHODS=ccall,cwrap` parameters when compiling
+
+However, there is a better way calling of C/C++ functions, shown below.
 
 ## A better way to call C++ functions - WASM Streaming
 
