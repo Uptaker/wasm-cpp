@@ -69,13 +69,69 @@ Sel juhul, väljustatud `.js` kood on põhimõtteliselt koodi ümbris (*wrapper*
 
 ## Levinud emcc parameetrid
 
+C/C++ faili compileerimiseks on vajalik importida järgmist *header* faili igas failis: 
+```cpp
+#include <emscripten.h>
+```
+
+Funktsioonide säilitamiseks väljaspool `main()` funcktsiooni, `EMSCRIPTEN_KEEPALIVE` makro on kohustuslik iga eksporditud funktsiooni ees. See ütleb kompilaatorile, et ta eksportiga teda väljastatud `.wasm` faili.
+
+Kohalik arenduskeskond (IDE) ilma WebAssembly pluginadeta võib nende peale näidata vigu või hoiatusi, kuid kõik on hästi, kuna `emcc` kompilaator tuvastab neid ära ning edukalt kompileerib.
+
 - `-o <file> väljund fail
 - `-s[OPTION]` lülita sisse/välja sisseehitatud parameetri, nt `-s NO_EXIT_RUNTIME=1`, et mitte väljuda käivituskeskkonnast või `-s EXPORTED_RUNTIME_METHODS=[ccall]`, et täpsustada exportitud funktsioonid.
 - `--help` manual
 
 ## C++ funktsioonide väljakutsumine brauseris
 
-TODO C++ calling bit (from compiled .js files) using ccall and cwrap
+### Märkus C++ ja C kohta
+
+Ainuke erand C++ juhul on see, et erinevalt C keelest, funktsiooni nimed on hoopis tükeldatud/rikutud (mangled). See tähendab, et peame kasutama `extern "C"` funktsiooni ees, et selle alles hoida.
+Üks arendussõbralik viis exportida C++ funktsioone on defineerida `EXTERN` makro, nagu siin:
+```cpp
+#define EXTERN extern "C
+```
+
+ning siis lisa selle funktsiooni ette, nagu allolevas näides:
+```cpp
+EXTERN EMSCRIPTEN_KEEPALIVE
+void log(string message) {
+	cout << message << endl;
+}
+```
+
+### Funktsioonide väljakutsumine
+
+Traditsiooniline viis C/C++ funktsioonide väljakutsumiseks on importida loodud `.js` faili ning kutsuda välja antud `cwrap()` või `ccall()` JavaScriptis.
+
+Näidis nende kasutamisest on **wrapping** kataloogis.
+
+`ccall()` otseselt kutsub välja kompileeritud C/C++ funktsiooni.
+
+```js
+const result = Module.ccall('multiply', 'number', ['number', 'number'], [num1.value, num2.value])
+```
+
+`cwrap()` samuti otseselt kutsub välja kompileeritud C/C++ funktsiooni, kuid laseb sul defineerida `wrapper` funktsiooni, mis on kasulikum, kui on vajadus funktsiooni kutsuda välja mitu korda.
+```js
+const cwrapMultiply = Module.cwrap('multiply', 'number', ['number', 'number'])
+const result = cwrapMultiply(num1.value, num2.value)
+```
+These methods require you to explicitly pass the parameter types, as well as the return value in JavaScript.
+
+Both of these call the equivalent C++ function:
+```cpp
+EXTERN EMSCRIPTEN_KEEPALIVE
+int multiply(int a, int b) {
+    return a * b;
+}
+```
+
+Enne kompilatsiooni:
+- `EMSCRIPTEN_KEEPALIVE` makro peab olema funktsioonide ees
+- lisa `NO_EXIT_RUNTIME=1 -s EXPORTED_RUNTIME_METHODS=ccall,cwrap` parameetrid kompileerimisel
+
+Kuid siiski on parem viis C/C++ funktsioonide kutsumiseks, mis on näidatud allpool.
 
 ## Parem viis C++ funktsioonide välja kutsumiseks - WASM Streaming
 
