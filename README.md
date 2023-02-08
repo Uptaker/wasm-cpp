@@ -1,57 +1,60 @@
-# WebAssembly for C++
+# WebAssembly ja C++
 
 ## Emscripten
 
-1. Separate LLVM section later outside of this repo, TODO
+Emscripten on kompilaator, mis saab kompileerida nii C ja C++ programmeerimiskeelt, kui ka mistahes keelt, mis kasutab LLVM-i. Kompileeritud väljundiks on WebAssembly kood, mis laseb toetavatel keeltel kasutada WASM käivituskeskkonda (*runtime-environment*). WebAssembly-ks konverteerides saab käivitada programmid läbi brauseri või mujal ning võimalusi on palju - kompileerida saab nii olemasolevad programmibaasid, traditsioonilised graafilised arvuti programmid (näiteks Qt või GTK raamistikuga) või ka terved mängud, nagu [Doom 3](https://wasm.continuation-labs.com/d3demo/)
 
+Emscipteni töövoogu taga on LLVM projekti `clang` kompilaator, mis kompileerib C ja C++ koodi WASM-iks. Kompileerimiseks on vajalik installeerida `emcc` kompilaatori, mis on osa EMSDK (Emscripten Development Kit) arenduskeskkonnast ning annab võimaluse väljastada `.wasm` ja `.js` failid.
 
-Emscripten is a compiler that can compile any language that uses LLVM, including C and C++, into WebAssembly. This enables such languages to run using the WASM runtime and even convert whole codebases and programs (Such as Qt-based desktop programs) or even games, such as [Doom 3](https://wasm.continuation-labs.com/d3demo/) - to be able to run on the browser or elsewhere.
+## Emscripteni paigutus
 
-Behind the hood, it uses the LLVM project's `clang` compiler to compile C/C++ to WASM. Using it requires installation of the `emcc` compiler, which is part of the EMSDK toolkit and can be used to generate `.js` and `.wasm` files.  
-## Emscripten installation
+Antud paigutamise juhend on loodud Linux/Unix süsteemidele.
 
-1. First, clone the official WASM compiler repository:
+Kõige soovitatavam viis teha tööd Emscripteniga on läbi EMSDK.
+
+1. Esmaseks sammuks on vajalik kloonida ametliku EMSDK repositooriumi.
 
 ```bash
 git clone https://github.com/emscripten-core/emsdk.git
 ```
 
-2. Install the latest version:
+2. Installeri kõige viimase versiooni:
 
 ```bash
 cd emsdk && ./emsdk install latest
 ```
 
-3. Activate it
+3. Pärast installatsiooni, lõpuks aktiveeri
 
 ```bash
 ./emsdk activate latest
 ```
 
-4. Source the required environment variables (as said during installation)
+4. Et alustada tööd praeguses terminalis, on vajalik väljastada `source` nii, nagu oli kirjas pärast eelneva käsu käivitamist.
 
-5. Check installation:
+5. Kontrolli installatsiooni: 
 ```bash
 emcc -v
 ```
 
-**Success!**
+**Paigaldatud!**
 
-You may need to re-source `emcc` for every new terminal to run the compiler, do so again using
+**NB!** Võib olla vajadus uuesti käivitada `source` käsku iga uue terminali avamisega, et `emcc` kompilaatori uuesti tööle panna. Tee seda kasutades järgmise käsu:
 ```bash
 source "[EMSDK_ROOT]/emsdk_env.sh"
 ```
-Where [EMSDK_ROOT] is the installation root directory.
 
-## Test WASM on the "Hello World" program
+..kus [EMSDK_ROOT] on EMSDK installatsiooni kataloogi asukoht.
 
-If it compiles, that means Emscripten is successfully installed!
+## Testi WASM "Hello World" programmiga
+
+Kui testprogramm kompileerib, siis Emscripten on edukalt paigaldatud!
 
 ```bash
 emcc hello_world/hello.cpp
 ```
 
-If you compile the `hello.cpp` using g++/gcc, notice how the outputs are the same:
+Kui kompileerida `hello.cpp` kasutades traditsioonilist g++/gcc kompilaatori, siis märka, kuidas järgmised väljundid on samad:
 ```bash
 ./hello.out
 "Hello world!"
@@ -62,35 +65,34 @@ node ./a.out.js
 "Hello world!"
 ```
 
-In this case, the `.js` file is essentially a wrapper, which allows binary code (.wasm) to be executed by JavaScript, and therefore can be invoked using an HTML file or JS.
+Sel juhul, väljustatud `.js` kood on põhimõtteliselt koodi ümbris (*wrapper*), mis laseb binaarsel WASM koodil käivitada läbi NodeJS käivituskeskkonna ning seetõttu saab olla käivitatud läbi JavaScript või HTML faili.
 
-## Compiling C/C++ and common emcc parameters
+## Levinud emcc parameetrid
 
-Compiling C/C++ requires adding the following header package in each file:
+C/C++ faili compileerimiseks on vajalik importida järgmist *header* faili igas failis: 
 ```cpp
 #include <emscripten.h>
 ```
 
-To preserve functions outside of `main()`, the `EMSCRIPTEN_KEEPALIVE` macro is required. This tells the compiler to export it for usage in your `.wasm` file.
+Funktsioonide säilitamiseks väljaspool `main()` funcktsiooni, `EMSCRIPTEN_KEEPALIVE` makro on kohustuslik iga eksporditud funktsiooni ees. See ütleb kompilaatorile, et ta eksportiga teda väljastatud `.wasm` faili.
 
-Your local IDE may show warnings or errors, but emcc will recognize it and compile it successfully.
+Kohalik arenduskeskond (IDE) ilma WebAssembly pluginadeta võib nende peale näidata vigu või hoiatusi, kuid kõik on hästi, kuna `emcc` kompilaator tuvastab neid ära ning edukalt kompileerib.
 
-- `-o <file> output file
-- `-s[OPTION]` switch an option, eg `-s NO_EXIT_RUNTIME=1` for not exiting the runtime, or `-s EXPORTED_RUNTIME_METHODS=[ccall]` for specifying export functions.
+- `-o <file> väljund fail
+- `-s[OPTION]` lülita sisse/välja sisseehitatud parameetri, nt `-s NO_EXIT_RUNTIME=1`, et mitte väljuda käivituskeskkonnast või `-s EXPORTED_RUNTIME_METHODS=[ccall]`, et täpsustada exportitud funktsioonid.
 - `--help` manual
 
-## Calling C++ functions
+## C++ funktsioonide väljakutsumine brauseris
 
-### A note about C++ vs C
+### Märkus C++ ja C kohta
 
-The only exceptin with C++ is that, unlike C, function names are mangled during compilation, which means we need to use `extern "C"` in front of a function to keep it.
-
-A developer friendly way to export C++ functions is to define a `EXTERN` macro, like this:
+Ainuke erand C++ juhul on see, et erinevalt C keelest, funktsiooni nimed on hoopis tükeldatud/rikutud (mangled). See tähendab, et peame kasutama `extern "C"` funktsiooni ees, et selle alles hoida.
+Üks arendussõbralik viis exportida C++ funktsioone on defineerida `EXTERN` makro, nagu siin:
 ```cpp
 #define EXTERN extern "C
 ```
 
-and then just pass it before the exported function, like this:
+ning siis lisa selle funktsiooni ette, nagu allolevas näides:
 ```cpp
 EXTERN EMSCRIPTEN_KEEPALIVE
 void log(string message) {
@@ -98,19 +100,19 @@ void log(string message) {
 }
 ```
 
-### Calling functions
+### Funktsioonide väljakutsumine
 
-The traditional way of calling C/C++ functions is to import the compiled `.js` file and call either `cwrap()` or `ccall()`
+Traditsiooniline viis C/C++ funktsioonide väljakutsumiseks on importida loodud `.js` faili ning kutsuda välja antud `cwrap()` või `ccall()` JavaScriptis.
 
-An example of their usages is present in the **wrapping** directory.
+Näidis nende kasutamisest on **wrapping** kataloogis.
 
-`ccall()` directly calls the compiled C/C++ function.
+`ccall()` otseselt kutsub välja kompileeritud C/C++ funktsiooni.
 
 ```js
 const result = Module.ccall('multiply', 'number', ['number', 'number'], [num1.value, num2.value])
 ```
 
-`cwrap()` also directly calls the compiled C/C++ function, but allows you to wrap it, which is more useful when repeatedly called
+`cwrap()` samuti otseselt kutsub välja kompileeritud C/C++ funktsiooni, kuid laseb sul defineerida `wrapper` funktsiooni, mis on kasulikum, kui on vajadus funktsiooni kutsuda välja mitu korda.
 ```js
 const cwrapMultiply = Module.cwrap('multiply', 'number', ['number', 'number'])
 const result = cwrapMultiply(num1.value, num2.value)
@@ -125,27 +127,27 @@ int multiply(int a, int b) {
 }
 ```
 
-Before compilation:
-- `EMSCRIPTEN_KEEPALIVE` macro is required to be in front of functions.
-- pass `NO_EXIT_RUNTIME=1 -s EXPORTED_RUNTIME_METHODS=ccall,cwrap` parameters when compiling
+Enne kompilatsiooni:
+- `EMSCRIPTEN_KEEPALIVE` makro peab olema funktsioonide ees
+- lisa `NO_EXIT_RUNTIME=1 -s EXPORTED_RUNTIME_METHODS=ccall,cwrap` parameetrid kompileerimisel
 
-However, there is a better way calling of C/C++ functions, shown below.
+Kuid siiski on parem viis C/C++ funktsioonide kutsumiseks, mis on näidatud allpool.
 
-## A better way to call C++ functions - WASM Streaming
+## Parem viis C++ funktsioonide välja kutsumiseks - WASM Streaming
 
-An easier and more natural way of calling functions is to also *stream* the `.wasm` files. This way, JS can use WASM functions and there is no need for using the compiled `.js`.
+Lihtsam ja intuitiivsem viis funktsioonide väljakutsumiseks on *striimida* `.wasm` faile. Niimoodi, JavaScript saab importida WASM funktsioonid ning ei ole vajadust ka kasutada väljastatud `.js` faile.
 
-Another advantage is not having to specify `-s NO EXIT_RUNTIME=1 -s EXPORTED_RUNTIME_METHODS=[ccall]` during compilation.
+Üks teine eelis on see, et kompileerimiseks ei ole enam tarvis lisada `-s NO EXIT_RUNTIME=1 -s EXPORTED_RUNTIME_METHODS=[ccall]`.
 
-An example is seen under the `streaming` directory.
+Näidis on demonstreeritud `streaming` kataloogis.
 
-## Compiling multiple files
+## Mitme faili kompileerimine
 
-`emcc` concatenates all source files, which means if you have multiple helper files, they can easily be compiled as such:
+`emcc` paneb kokku terve lähtekoodi. See tähendab, et kui sul on näiteks mitmest osast programm, kus on näiteks abifunktsioonid, siis need on kompileeritavad järgmiselt:
 
 ```bash
 emcc main.cpp utils.cpp -o output.js
 ```
 
-See the `memory` folder and how `memory.cpp` imports `malloc.cpp` functions.
+Näidis on `memory` kaustas, kus `memory.cpp` importib `malloc.cpp` funktsioone.
 
