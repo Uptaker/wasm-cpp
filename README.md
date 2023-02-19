@@ -159,31 +159,6 @@ Näidis on `memory` kaustas, kus `memory.cpp` importib `malloc.cpp` funktsioone.
 
 # Lihtne jõudlustest
 
-## Bubblesort
-Bubblesort - 100,000 numbrit, numbrid 0 kuni 10000
-
-Algoritmed on mõlemil samad, kuid Rust koodis on asjad keerulisemad - peab konverteerima Rust massiivi JavaScript massiiviks. Lisaks toimub algne serialiseerimine. Serialiseerimine läbi erinevaid tüüpe on kahjuks üks WebAssembly nõrkustest, kuid siiski, JavaScript on brauserites päris hästi optimeeritud.
-
-### Firefox
-Keel    Rust        Js
-1.      9098        17659
-2.      10284       20006
-3.      9772        19996
-4.      9930        19768
-5.      10434       19834
-Kesk.   9903.6      19452.6
-
-### Chrome
-Keel    Rust        Js
-1.      22298       10602
-2.      23338       11001
-3.      23854       11370
-4.      23220       10669
-5.      23162       10843
-Kesk.   23174.4     10897
-
-*mõõdetud millisekundites*
-
 ## Fibonacci numbrid
 
 Hea võrdlusalgoritm jõudluse võrdlemiseks peaks olema protsessoriga seotud ja hõlmama intensiivseid arvutusi. See võimaldab  kahe keele jõudlust võrrelda ilma muude segavate teguriteta, nagu sisend/väljund (I/O) või võrgu latentsus (latency).
@@ -201,6 +176,7 @@ Keel    C++        Js
 5.      11.2        4699
 Kesk.   12.26       5088.7
 
+*mõõdetud millisekundites*
 
 ### Firefox
 Keel    C++        Js
