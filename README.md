@@ -168,24 +168,26 @@ Sellise algoritmi üheks näiteks on Fibonacci jadageneraator. Fibonacci jadagen
 Algoritmi sisendnumbriks on miljon.
 
 ### Chrome
-Keel    C++        Js
-1.      11.2        5213
-2.      10.4        5159
-3.      17.5        5071.5
-4.      11          5301
-5.      11.2        4699
-Kesk.   12.26       5088.7
+| C++ | Js |
+| ---------| ------------- |
+|11.2      |5213
+|10.4      |5159
+|17.5      |5071.5
+|11        |5301
+|11.2      |4699
+|**12.26**   |**5088.7**
 
 *mõõdetud millisekundites*
 
 ### Firefox
-Keel    C++        Js
-1.      3          50813
-2.      3          50987
-3.      4          52310
-4.      3          50017
-5.      3          52706
-Kesk.   3.2        51366.6
+|C++        |Js
+|--------|-----------|
+|1.      |3          |50813
+|2.      |3          |50987
+|3.      |4          |52310
+|4.      |3          |50017
+|5.      |3          |52706
+| 3.2    |    51366.6
 
 
 # Loe rohkem
