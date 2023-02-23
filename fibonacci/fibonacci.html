@@ -31,16 +31,23 @@
             console.log("Fibonacci in C++..")
             let startTime = performance.now()
             exports.fibonacci(1000000)
-            console.log(`C++ ended in ${performance.now() - startTime}`)
+            const time = performance.now() - startTime
+            console.log(`C++ ended in ${time}`)
+            cpp.innerText = time
         }
 
         function measureJs() {
             console.log("Fibonacci in JavaScript..")
             let startTime = performance.now()
             fibonacciJs(1000000)
-            console.log(`JavaScript ended in ${performance.now() - startTime}`)
+            const time = performance.now() - startTime
+            console.log(`JavaScript ended in ${time}`)
+            js.innerText = time
         }
     </script>
 
 </body>
+
+<div>Javascript: <span id="js">Waiting...</span></div>
+<div>C++: <span id="cpp">Waiting...</span></div>
 </html>
