@@ -77,7 +77,7 @@ C/C++ faili compileerimiseks on vajalik importida järgmist *header* faili igas 
 #include <emscripten.h>
 ```
 
-Funktsioonide säilitamiseks väljaspool `main()` funcktsiooni, `EMSCRIPTEN_KEEPALIVE` makro on kohustuslik iga eksporditud funktsiooni ees. See ütleb kompilaatorile, et teda eksportidakse `.wasm` faili [(src)](https://emscripten.org/docs/api_reference/emscripten.h.html#compiling).
+Funktsioonide säilitamiseks väljaspool `main()` funktsiooni, `EMSCRIPTEN_KEEPALIVE` makro on kohustuslik iga eksporditud funktsiooni ees. See ütleb kompilaatorile, et teda eksportidakse `.wasm` faili [(src)](https://emscripten.org/docs/api_reference/emscripten.h.html#compiling).
 
 Kohalik arenduskeskond (IDE) ilma WebAssembly pluginadeta võib nende peale näidata vigu või hoiatusi, kuid kõik on hästi, kuna `emcc` kompilaator tuvastab neid ära ning edukalt kompileerib.
 
@@ -120,9 +120,9 @@ const result = Module.ccall('multiply', 'number', ['number', 'number'], [num1.va
 const cwrapMultiply = Module.cwrap('multiply', 'number', ['number', 'number'])
 const result = cwrapMultiply(num1.value, num2.value)
 ```
-These methods require you to explicitly pass the parameter types, as well as the return value in JavaScript.
+Need meetodid nõuavad parameetrite tüübid ja tagastusväärtuse JavaScriptis, nagu näha üleval olevates näidistes.
 
-Both of these call the equivalent C++ function:
+Mõlemad meetodid kutsuvad välja järgmise funktsiooni:
 ```cpp
 EXTERN EMSCRIPTEN_KEEPALIVE
 int multiply(int a, int b) {
@@ -155,50 +155,11 @@ Näidis on demonstreeritud `streaming` kataloogis.
 emcc main.cpp utils.cpp -o output.js
 ```
 
-Näidis on `memory` kaustas, kus `memory.cpp` importib `malloc.cpp` funktsioone.
+Mitme faili kompileerimise näidis on `memory` kaustas, kus `memory.cpp` importib `malloc.cpp` funktsioone. Sama kaust annab ka huvilistele aimu mäluhaldusest WebAssembly-s, mis on juba omalaadi keerulisem teema.
 
-# Lihtne jõudlustest
-
-## Fibonacci numbrid
-
-Hea võrdlusalgoritm jõudluse võrdlemiseks peaks olema protsessoriga seotud ja hõlmama intensiivseid arvutusi. See võimaldab  kahe keele jõudlust võrrelda ilma muude segavate teguriteta, nagu sisend/väljund (I/O) või võrgu latentsus (latency).
-
-Sellise algoritmi üheks näiteks on Fibonacci jadageneraator. Fibonacci jadageneraator hõlmab intensiivseid arvutusi, mistõttu on see hea kandidaat jõudluse võrdluseks.
-
-Algoritmi sisendnumbriks on miljon.
-
-### Chrome
-| C++ | Js |
-| ---------| ------------- |
-|11.2      |5213
-|10.4      |5159
-|17.5      |5071.5
-|11        |5301
-|11.2      |4699
-|**12.26**   |**5088.7**
-
-*mõõdetud millisekundites*
-
-### Firefox
-|C++        |Js
-|--------|-----------|
-|3          |50813
-|3          |50987
-|4          |52310
-|3          |50017
-|3          |52706
-| 3.2       |51366.6
-
-### Edge
-|C++        |Js
-|--------|-----------|
-|15          |5151
-|14          |5206
-|15          |5161
-|14          |5232
-|16          |5154
-|14.8        |5180.8
-
+Huvilistele C++ ja WebAssembly mäluhaldusest lähemalt:
+- https://www.fastly.com/blog/webassembly-memory-management-guide-for-c-rust-programmers
+- https://blog.devgenius.io/part-1-memory-management-in-wasm-52195f9b707f
 
 # Loe rohkem
 
