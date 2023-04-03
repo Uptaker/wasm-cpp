@@ -2,9 +2,9 @@
 
 ## Emscripten
 
-Emscripten on kompilaator, mis saab kompileerida nii C ja C++ programmeerimiskeelt, kui ka mistahes keelt, mis kasutab LLVM-i. Kompileeritud väljundiks on WebAssembly kood, mis laseb toetavatel keeltel kasutada WASM käivituskeskkonda (*runtime-environment*). WebAssembly-ks konverteerides saab käivitada programmid läbi brauseri või mujal ning võimalusi on palju - kompileerida saab nii olemasolevad programmibaasid, traditsioonilised graafilised arvuti programmid [(src)](https://emscripten.org/docs/introducing_emscripten/about_emscripten.html) (näiteks Qt või GTK raamistikuga) või ka terved mängud, nagu Doom 3 [(src)](https://wasm.continuation-labs.com/d3demo/)
+Emscripten on kompilaator, mis saab kompileerida nii C ja C++ programmeerimiskeelt, kui ka mistahes keelt, mis kasutab LLVM-i. Kompileeritud väljundiks on WebAssembly kood, mis laseb toetavatel keeltel kasutada WASM käivituskeskkonda (*runtime-environment*). WebAssembly-ks konverteerides saab käivitada programmid läbi brauseri või mujal ning võimalusi on palju - kompileerida saab nii olemasolevad programmibaasid, traditsioonilised graafilised arvuti programmid [[1]](https://emscripten.org/docs/introducing_emscripten/about_emscripten.html) (näiteks Qt või GTK raamistikuga) või ka terved mängud, nagu Doom 3 [[2]](https://wasm.continuation-labs.com/d3demo/)
 
-Emscipteni töövoogu taga on LLVM projekti `clang` kompilaator, mis kompileerib C ja C++ koodi WASM-iks. Kompileerimiseks on vajalik installeerida `emcc` kompilaatori, mis on osa EMSDK (Emscripten Development Kit) arenduskeskkonnast ning annab võimaluse väljastada `.wasm` ja `.js` failid. [(src)](https://emscripten.org/docs/introducing_emscripten/about_emscripten.html)
+Emscipteni töövoogu taga on LLVM projekti `clang` kompilaator, mis kompileerib C ja C++ koodi WASM-iks. Kompileerimiseks on vajalik installeerida `emcc` kompilaatori, mis on osa EMSDK (Emscripten Development Kit) arenduskeskkonnast ning annab võimaluse väljastada `.wasm` ja `.js` failid. [[3]](https://emscripten.org/docs/introducing_emscripten/about_emscripten.html)
 
 ## Emscripteni paigutus
 
@@ -77,7 +77,7 @@ C/C++ faili compileerimiseks on vajalik importida järgmist *header* faili igas 
 #include <emscripten.h>
 ```
 
-Funktsioonide säilitamiseks väljaspool `main()` funktsiooni, `EMSCRIPTEN_KEEPALIVE` makro on kohustuslik iga eksporditud funktsiooni ees. See ütleb kompilaatorile, et teda eksportidakse `.wasm` faili [(src)](https://emscripten.org/docs/api_reference/emscripten.h.html#compiling).
+Funktsioonide säilitamiseks väljaspool `main()` funktsiooni, `EMSCRIPTEN_KEEPALIVE` makro on kohustuslik iga eksporditud funktsiooni ees. See ütleb kompilaatorile, et teda eksportidakse `.wasm` faili [[4]](https://emscripten.org/docs/api_reference/emscripten.h.html#compiling).
 
 Kohalik arenduskeskond (IDE) ilma WebAssembly pluginadeta võib nende peale näidata vigu või hoiatusi, kuid kõik on hästi, kuna `emcc` kompilaator tuvastab neid ära ning edukalt kompileerib.
 
@@ -89,7 +89,7 @@ Kohalik arenduskeskond (IDE) ilma WebAssembly pluginadeta võib nende peale näi
 
 ### Märkus C++ ja C kohta
 
-Ainuke erand C++ juhul on see, et erinevalt C keelest, funktsiooni nimed on hoopis tükeldatud/rikutud (mangled). See tähendab, et peame kasutama `extern "C"` funktsiooni ees, et selle alles hoida. [(src)](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#calling-compiled-c-functions-from-javascript-using-ccall-cwrap)
+Ainuke erand C++ juhul on see, et erinevalt C keelest, funktsiooni nimed on hoopis tükeldatud/rikutud (mangled). See tähendab, et peame kasutama `extern "C"` funktsiooni ees, et selle alles hoida. [[5]](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#calling-compiled-c-functions-from-javascript-using-ccall-cwrap)
 Üks arendussõbralik viis exportida C++ funktsioone on defineerida `EXTERN` makro, nagu siin:
 ```cpp
 #define EXTERN extern "C
@@ -141,7 +141,7 @@ Kuid siiski on parem viis C/C++ funktsioonide kutsumiseks, mis on näidatud allp
 
 ## Parem viis C++ funktsioonide välja kutsumiseks - WASM Streaming
 
-Lihtsam ja intuitiivsem viis funktsioonide väljakutsumiseks on *striimida* `.wasm` faile. Niimoodi, JavaScript saab importida WASM funktsioonid ning ei ole vajadust ka kasutada väljastatud `.js` faile. Lisaks sellele on see kõige optimiseeritud viis laadida `.wasm` faile. [(src)](https://developer.mozilla.org/en-US/docs/WebAssembly/JavaScript_interface/instantiateStreaming)
+Lihtsam ja intuitiivsem viis funktsioonide väljakutsumiseks on *striimida* `.wasm` faile. Niimoodi, JavaScript saab importida WASM funktsioonid ning ei ole vajadust ka kasutada väljastatud `.js` faile. Lisaks sellele on see kõige optimiseeritud viis laadida `.wasm` faile. [[6]](https://developer.mozilla.org/en-US/docs/WebAssembly/JavaScript_interface/instantiateStreaming)
 
 Üks teine eelis on see, et kompileerimiseks ei ole enam tarvis lisada `-s NO EXIT_RUNTIME=1 -s EXPORTED_RUNTIME_METHODS=[ccall]`.
 
@@ -160,6 +160,16 @@ Mitme faili kompileerimise näidis on `memory` kaustas, kus `memory.cpp` importi
 Huvilistele C++ ja WebAssembly mäluhaldusest lähemalt:
 - https://www.fastly.com/blog/webassembly-memory-management-guide-for-c-rust-programmers
 - https://blog.devgenius.io/part-1-memory-management-in-wasm-52195f9b707f
+
+# Allikad
+
+1. https://emscripten.org/docs/introducing_emscripten/about_emscripten.html
+2. https://wasm.continuation-labs.com/d3demo/
+3. https://emscripten.org/docs/introducing_emscripten/about_emscripten.html
+4. https://emscripten.org/docs/api_reference/emscripten.h.html#compiling
+5. https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#calling-compiled-c-functions-from-javascript-using-ccall-cwrap
+6. https://developer.mozilla.org/en-US/docs/WebAssembly/JavaScript_interface/instantiateStreaming
+
 
 # Loe rohkem
 
