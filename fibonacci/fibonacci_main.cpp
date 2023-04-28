@@ -5,11 +5,10 @@
 */
 
 #include <cstdint>
-#include <emscripten.h>
+#include <iostream>
 
-#define EXTERN extern "C"
+using namespace std;
 
-EXTERN EMSCRIPTEN_KEEPALIVE
 uint64_t fibonacci(uint64_t n) {
     if (n == 0) return 0;
     else if (n == 1) return 1;
@@ -21,4 +20,10 @@ uint64_t fibonacci(uint64_t n) {
         b = c;
     }
     return b;
+}
+
+int main() {
+     
+    cout << fibonacci(1000000) << endl;
+    return 0;
 }

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Algorithms</title>
+</head>
+<body>
+    <script type="module">
+        import module from './algorithms.mjs'
+        let exports
+
+        const h512 = 'TRz7GzsRVz7nfsE6tTFXurzV7p7jNQ5VYjqSESJZkeX2jF2C8WYkDz5mBLwJ7r9RMgkN99qhckkfAy6uUSJ4dQQHTrMJrMct7GjmBAvUneGZtAZsBJtmHD85tZRn3JJ3qgPxz9SULTeMzcpSj5RtGdAgUzy72wCdLhKQesdKMJ5cp8sWAqRpr7HkBRkqKbZm6mutKpKsFBeCx7tGvpFTruc56Xbgzv67UDeN3LZnufQF4XFr3vzKcqRUZhugWJnkdN3ZZD9kXrhXKNdK7fJhA2bKaN5uuYHrRRPLSmV6YeVF3cJEheyUmtY2g98zxSunUWEmzYtyRuDPe68tgh5T56ZyNfSFZ7eMrWd7bk2WFDcc5z643uyDnFKNsP9VrJbcFkW5JdXUY8uMzc3kDbKppKtg9UKfXLF8e63FsQkwnRy52tM3BnZWcqr5p6AMx7GZfZBxKrZAnYVTLYN8v9Wcy4JkkyxeNwJUZEHug3btqJVbVUFzLQgK2JGXFHv6mxpM'
+        const h1024 = 'e65CzRcehZV3pnKYvFNcDjGWLR6eNWakbk9fpGnJstAUPgT7pWwhnM5qExgeFxteKLnkBhtzFjkfVr9vLCE4keGT7wabhY3SHbdp5fxYY6v4DsahuSdecRj6GfKpMqBuYDNZNayvshTyTqvQADSbg3PM7rXRJcPv46FU67xBrW66FdBVpG6xpSzFK7B9s7JKztrrgWwJ43NRPqHKpZRpya9UaXZsEuVT3NTmhtwAdLzbT25SNKtbfnUxsB3MEMj8SJudDBrTyEp599CN5KupkDYzGg3fFJ7Hre5r7exwXL9y9xphkcGpJNrGkrtHsLBZ5D35C35gNuVewJmuXEqjypR5wpJWW9Rkvh2xTLw8B6gy5eCU2wtmKr5kYjzL73eXjU2zGVpPzaLLtscrMyQ8kHx2pxK4QzWdbAA6FAdzjEXKpapuaj33YttW7WN8xBtLAm4tSZQk73xCPFAgPeE2738HNC9EB942pjP4v6nEgFuhn5BYzN4F7f9rHQXsXJSZ5ZBk3SrYvHqRjn9Bmj9baVgXJVnFcrVHt4VrzjB5TVUQKUruRqmRwK8AjV2rS2X3kJrrDHwAEXUuR5tHucjGzKEfucfEc3vant2cMXLc9KZQHS2nTzJ8aY9umBSgVHP5KRPDmxwDgwhCLj66ctqyRXBXhYA5uPJAyp6JH3wEnVJzpjfeqXqJjZN3G59ETV7edgv5KEZgPCUGPdw92zzxkj7JCrqcgCbkNNnxLSwTXGeazLfnUPuPFxUWxDSYzNpAp67hUeqSSF2yx4M3YQ47PK9aDUXmprHZHjaC2zRY8eEYbtYxab8Sjx2DeuUFy4HAnRZj8pxuyW4jn8SGLbZsTzLSK6L9PxZGb4bemcxt6FdzRU7yT3zC2gUV8jRdQR3UEbYrcMRnksZswcHKeuCstM5zP4XbhWFSY8jQuTETzZ6BmZthvpB3BSRp9fCQpMmQzYXrkKhVUDH9V2LEzYzLmpXeh2e3ZMSugwmLWpTgRedVR6zCAJxkfHmKmMNGHK5N'
+        const h2048 = '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'
+        const h4096 = 'KExRVK5knhNV2n5xWYDcPFZ8AUNpTWK2C6QJUQfYX3MhxpyZUJnyCLhYAZwW3s9RWLbup9mbQ9SqHuTn7GYwwdM8uAyJEPyyzZs7kZfFXv8f94b9HQ33MgW842cz4KLtUSCZH5CH3tfwzdxzxLHvCRcmykDQKuvkaGGZD8FhAkVj5xBMU4p85gAaTLkqF8BSS9ZerxC2t9dgWuC4bRPwCYyhL3XMGmtwYE9Yqg5jzNZYdqc8x52PHttfkBDVkmCv62pyYkVtG6wcA4KEHJa7Jq489u5f2jSKYqBSccBhKgtkCVX4Vh9gQgL538dXtU8PtdnAwky2fdV6szvnMvs29EABMKXPr3DjPwcRHZyHUTNFdNcED22RFU8N5b2rkqwwa6s3YKpLEb7jMVaUVYHjaqZJfEQZKZ5YuvPWByfnByfnJBUspkSKFfn6ag2bFzk8YScX5AqXArxBCSe57pYAjJntxCTykcr8Grujq6q5Lvdkq4LT8ZYmNQPqtSBZmU4ZFFTd5xLvuK2NNbrKMmPyzRSePbxLJG7PtYHMLzfg3EvuFHDrHgHgY9nV7tvrM3fxaTeYTMTf8vhwNXNj2MGs766qfcMRMH2SzceFYtWhY9U9aGX6TMHrzKkuz3QzDkNqcYahU543DaPLwTXz5A8hUncYpJ2evTGYtyZtxdcff6y5LLSJuSbBg8QASa35VnSPgBSqDew76mXXvSdFDQUDHHqF5jam8Uc2QdspSR5SRjEzsQD89FB2AT79SaEuEzUqUAjZLr3FxGsLypqdPyMG9cpVB53vd7x8PJuDjDNarTQRmeVrXN4ubMdnycnq2ju3XeFkvrvty7mUyh9cKjtPErEzKxghyWzCVzAx7CcemsVDCzwTNTHed2sw4nS2fyVCJCpVMxX5zfvrkrP3ezA8SJe5YTP9ZgrMAjYdK2LNWe22JpCazJ2cYJjFQXcxTWkjZFXJmJDGSbzVyW5eKjh8dBtWEPDNVdddXE2EtcKhRQwxnVSbXNBN5Br7FBBSx7ebjJgxSvK5GRfBf372qHsgzQgqpxD5S3LFbdZfnra7rR8gVXNtdC4ZUk3b6cGAMHKGHH4gMQ3rvGapwBzeLbvfkmdNCMRC3u6NHS38GQRPEvALK8gr4sw6Rh4rfbayx2uesRez4mWTnV6ANz9LAAdetS8TYsQGtJ97ZReXyvmyB4hEr9GNDu5hzEJwhNMQpXdZJxwqtYNHAZMWLqsm4fYWCY9BAHHywmtEaztULvj5AWPVjceH8AyBAqrHtbazfbyGsF3meSz5K9mveW7WxM5uT7HtFshZgWjBmc2zqzRHvYnRVANgj5fgQcbBJP4hjhJQmZFaQYDdpHPduNHtpGHZaG2sxa2KvtPBcDaGF6GwrPJpc9yMmNzc79Ss7D6yaDSjY4BXDukdNMy8BtmMNZTAXTqJX9RZqbYrDB8J94Mk3tcKHnrYZRZmZUCUKknC5cm6JaUBWK5dumQ4t3Z2WbgWaAPNTkKeSENtMeawYckfkqaaXFsnbsgdNpnFUFdCmngtrahRYLGhgJNfZQpEdhWP5kWERZUDVkYxECYJK6Be2tM7XnbeA2MpMm8c9gWXkexfTcnarttuKYDhjaVHWKYnsk7heADGRxBM7wwmGBqbwmbMwH5xXvAZCwrr5BSTeXz9WJpLuJbrHv2QGEQvFkZeUBJLSCYHtxtd9pcCDx86YSC2zmYBXeqj84vuEdT9NH22whD4pRj7MENKUuJJEXn25nyu5vpjgyfQVHkDvMfZuTwFDuhg84fUMMPpw5uSaq9eA47wfSnpeXVKNMgEg7G6BFNCgdnRZ52AacrYKbk98fL9KJchYsDzcBepXEEy32wgmCV4RSsfJAfhKYXWzgtCPG5WkhadjuVTeQQ4x3NmutHm7Hr4934rhwNE2aDcBAT5W3W9nHLYDXEwarUjycK7Asxt4XR2V6NprPss9h3gurCWsA3BjYYZL6JynMsBZhzwSffcGcKeVuTdqErC4sLuqYQaGCkZtKVYuEFnKXCXZvWqWFVP9BXnzD9CJDqHbtXVbtfrPCq34zga6M9TLJtv9aUKj6uSzmg7bNT726fJZWRSG3BdShTEa3x7CNQq3hhQCF3n9c395CT2nPTr8dvtk2Spc2Bst84sgkUGguvKE4AP7VmKZYq4KEWVK23G6aUdhyUP68XBLSjGLkFubCeTT56QUt8wfzcE6wsZLSPEJAufKaqvFbPTgUVRhLfumvVAyTAfdgs65S7zprR2d8jmvtDM6AKgC4AwC9KPvbfxV57RhRgwzUzyfdZsdQcEgxNXJdksZNwBHjP4rYgHEY9MQpnU5mtZF3C5y7WSYVUV39wzWrUdW6N7jLBeTgYHhNrFE6hYGjm6jXvcD4UfJvzKY23MeMKmY34R8NazMaQcKvdUgcV7WE7vzSd8qSyeaYcuf4DY52gjpfELXc7BUg9LxQjs8xvbCg52efqUzxXp64V4Y4LzumBBLRduN8rq6as6HwHddk4FegPjuuCHLYEaGwxhNuMRWHPCnKtjLWqHeKyfzRkeZs3BNGC2Uuc4AV9G2rf5UBnWB3DyphewU4UjscddQcPvK9J7cBjya8ad4k8qBHW6MwQRjNjFmBXb6wuTfLSVsLNuPwER4vUrMvAeFngpHtAYTcSb5eHpFHeqtu2MJdgQZETZuat877tYEKgnhbb8UG7axNSv37YwvSXwQv3QB2tUXMW4LTNZDyAF25UCjmyBqUYhzzuPw3CH35Xh22XaDaDHhzbvJNcggKJDZUMMLUALcA58nWywtdZbxTvwvGgyDyHfE66mHmaFwzevzmTYejHHwqPnMLQZsVpRG6GfanPT4C76gLMDxCwmnuhXLkP3KMZg4JJjgztUUKZ6GNarnNkSnMR8J6prTscjXs4CsXZBfZCdVeGd2B3buFQD3mAAkuwCBz2R4GZq2rGmEdQ3TXN93v2p3KSfaVXFz3THu2CF5xF5M5tBqxJaEJ5Lu6RcbKVeSBSCjfACspemPFeUdV7uz5BfGZ6e4KfNGmwqhsPsswTK9qxHx4ez8WZ2eLBvc3XfCcaUxxLyTpqBu36576nPScqnCw38TPtaL4dH9nvmmzUb2w4S6aSXwrsvFFAVxdR5HFaWY3cQQ83X2wynhCxZvFmP2n5LnbCbt7YUnW3NmaRPwLnBmF5HqZhfPvht425vpzM59CPcE8SbTwD88xrYxZezTYf6SVss8Qr4ztAFw9TFDZSw535BeTH9NZrJJ6DjhXhTEmjQJgrBWpyfLvB3rchXX4TjRXcSUhbbLSaEurzq7EPeQFxdD8YthtNH7Fw6wbBjKdMYueWTqgbmmdz5agkV2EnBaWYvDKPbuMBygMyn8PwJ8XGdBe8nnyyrueEySauDkEq2Cussuv6fVDF8J3mrd3cwfNXExHB5RTgKqAJBcksDsLuLDdkEq97VEPpH9Lkd23uf887XyXc9x7xGd8cwuCd3LE3WTjVDKxKvxfZzA45tsYbBnYRdxBmDtdTJtXssXerGxgyTdMkG5hYnm7nekSjDnRSARwrvCE2mSrwYR3Nza9vmDYXfHLQYbKNwH3kZ9dAzFxzHD5WknukjWgzU7JEVDQfg2GgHf7MjKVmjvQFeYfSZPJCf5gDDxwtpmRJyc9G8YFQqfNVaQEdZB6HcBZXfpFKAen637xs2Mw7Lne5ppFhkXwyZmevWDStWqPaENfVQULrH8gCYab7vXNSSy6erf34psL6dX2kG4sTF9g4g2FmYAMqju777x2xXEvQfvEVjB4RyYSGW89JkCYxGpgvmqhSAr7EYkEEBbZaLxEbQW7uPjbXU5wa7Wf65hHpYG9mfJxn7YUk7BkC6qr9vJxzpWNxGa4Rya3cZCRAgPbNbDjqbMWUYTmb3ZcSsHyC72wJaEHz2swxQN574mTMaMfqkDQQ6hzABezCVY8QdF5N7rTBzJJrGkMqRJkysu784DZNAfg8N74h49YNXMjXT8cWPC5AtEKkhzxR2SKkZnNbyuFqAndF83pvZaQ2cn3bJ4zrEqh2bew5BFjRNEPFmCtJP7rrWvs4BDKRYL7nRtEbq2WaPrU2hVuuA4KadY9BBCp8BzhZn'
+
+
+        module().then(r => {
+            console.log(r)
+            exports = r
+
+            startFibonacci(10)
+            startFibonacci(80)
+            startFibonacci(1000)
+            startFibonacci(1000000)
+
+            startSoE(10000)
+            startSoE(1000000)
+            startSoE(100000000)
+            startSoE(1000000000)
+            startSoE(10000000000)
+
+            startMC(100)
+            startMC(10000)
+            startMC(1000000)
+            startMC(100000000)
+
+            startHash(h512)
+            startHash(h1024)
+            startHash(h2048)
+            startHash(h4096)
+        })
+
+        function startFibonacci(n) {
+            let name = 'Fibonacci'
+            console.log(name + " in C++...")
+            let startTime = performance.now()
+            exports._fibonacci(n)
+            let time = performance.now() - startTime
+            console.log(`C++ ended in ${time} ms`)
+            cpp.innerText += `\n\n${name} ${n} -> ${time}`
+        }
+
+
+        function startSoE(n) {
+            let name = 'SoE'
+            console.log(name + " in C++...")
+            let startTime = performance.now()
+            exports._sieveOfEratosthenes(n)
+            let time = performance.now() - startTime
+            console.log(`C++ ended in ${time} ms`)
+            cpp.innerText += `\n\n${name} ${n} -> ${time}`
+        }
+
+        function startMC(n) {
+            let name = 'Monte Carlo'
+            console.log(name + " in C++...")
+            let startTime = performance.now()
+            exports._monteCarloPi(n)
+            let time = performance.now() - startTime
+            console.log(`C++ ended in ${time} ms`)
+            cpp.innerText += `\n\n${name} ${n} -> ${time}`
+        }
+
+        
+
+        function startHash(n) {
+            let name = 'Monte Carlo'
+            console.log(name + " in C++...")
+            let startTime = performance.now()
+            exports._djb2Hash(n)
+            let time = performance.now() - startTime
+            console.log(`C++ ended in ${time} ms`)
+            cpp.innerText += `\n\n${name} ${n} -> ${time}`
+        }
+
+    </script>
+
+</body>
+
+<div>C++: <span id="cpp">Waiting...</span></div>
+</html>

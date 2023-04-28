@@ -83,7 +83,8 @@ Kohalik arenduskeskond (IDE) ilma WebAssembly pluginadeta võib nende peale näi
 
 - `-o <file> väljund fail
 - `-s[OPTION]` lülita sisse/välja sisseehitatud parameetri, nt `-s NO_EXIT_RUNTIME=1`, et mitte väljuda käivituskeskkonnast või `-s EXPORTED_RUNTIME_METHODS=[ccall]`, et täpsustada exportitud funktsioonid.
-- `--help` manual
+- `--help` abi
+- `-s INITIAL_MEMORY=3GB -s MAXIMUM_MEMORY=3GB` - Luba kasutada 3GB süsteemi mälu - vaikimisi on 256Mb. Kasutatud näiteks `algorithms.cpp` faili kompileerimiseks.
 
 ## C++ funktsioonide väljakutsumine brauseris
 
@@ -146,6 +147,54 @@ Lihtsam ja intuitiivsem viis funktsioonide väljakutsumiseks on *striimida* `.wa
 Üks teine eelis on see, et kompileerimiseks ei ole enam tarvis lisada `-s NO EXIT_RUNTIME=1 -s EXPORTED_RUNTIME_METHODS=[ccall]`.
 
 Näidis on demonstreeritud `streaming` kataloogis.
+
+## JavaScript moodulitena
+
+Emscriptenile saab ette öelda, et ta kompileeriks JavaScript moodulina. Nii saab kasutada JavaScripti `import` võtmesõna, et kasutada loodud funktsioone.
+
+Näiteks järgneva käsuga loob Emscripten `.mjs` faili, kus on sees antud faili funktsioonid (märgistatud `EMSCRIPTEN_KEEPALIVE` makroga):
+
+```bash
+emcc hello.cpp -o hello.mjs
+```
+
+Antud `.mjs` faili saab importida mitmet moodi. Esiteks peab JavaScript olema määratud moodulina:
+
+```js
+<script type="module">
+```
+ See lubab importida skripte.
+
+ Nüüd saab kasutada funktsiooni järgmiselt:
+
+ ```js
+import wasm from './algorithms.mjs' // ükskõik mis nimi, 'wasm' on kasutatud näitena
+
+let modules = await wasm() // wasm tagastab Promise()
+
+modules._hello()
+modules._add(1, 2)
+
+modules.['_hello']()
+modules.['_add'](1, 2)
+ ```
+
+ Teine variant:
+
+ ```js
+import wasm from './algorithms.mjs' // ükskõik mis nimi, 'wasm' on kasutatud näitena
+
+wasm().then(modules => {
+    modules._hello()
+    modules._add(1, 2)
+
+    modules.['_hello']()
+    modules.['_add'](1, 2)
+})
+ ```
+
+ Sama meetod oli kasutatud `algorithms` kaustas olevas `index.html` failis.
+
 
 ## Mitme faili kompileerimine
 
