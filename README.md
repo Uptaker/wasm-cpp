@@ -81,7 +81,7 @@ Funktsioonide säilitamiseks väljaspool `main()` funktsiooni, `EMSCRIPTEN_KEEPA
 
 Kohalik arenduskeskond (IDE) ilma WebAssembly pluginadeta võib nende peale näidata vigu või hoiatusi, kuid kõik on hästi, kuna `emcc` kompilaator tuvastab neid ära ning edukalt kompileerib.
 
-- `-o <file> väljund fail
+- `-o <fail.js>` väljund fail
 - `-s[OPTION]` lülita sisse/välja sisseehitatud parameetri, nt `-s NO_EXIT_RUNTIME=1`, et mitte väljuda käivituskeskkonnast või `-s EXPORTED_RUNTIME_METHODS=[ccall]`, et täpsustada exportitud funktsioonid.
 - `--help` abi
 - `-s INITIAL_MEMORY=3GB -s MAXIMUM_MEMORY=3GB` - Luba kasutada 3GB süsteemi mälu - vaikimisi on 256Mb. Kasutatud näiteks `algorithms.cpp` faili kompileerimiseks.
@@ -209,6 +209,17 @@ Mitme faili kompileerimise näidis on `memory` kaustas, kus `memory.cpp` importi
 Huvilistele C++ ja WebAssembly mäluhaldusest lähemalt:
 - https://www.fastly.com/blog/webassembly-memory-management-guide-for-c-rust-programmers
 - https://blog.devgenius.io/part-1-memory-management-in-wasm-52195f9b707f
+
+## Kompilatsiooni optimeerimine
+
+Emscripten kompilaator lubab anda parameetrid, mis optimeerivad loodud masinkoodi. Optimisatsiooni tagajärg on tavaliselt suurem faili suurus iga järgneva optimisatsioonitasega ning kauemad kompileerimisajad. Optimisatsiooni tulemus võib mitmekordistada koodi jõudlust.
+
+Optimisatsioonitasemed on järgmised:  `-O1`, `-O2`, `-Os` ja `-O3`, kus 1 on kõige väiksem tase ning 3 on kõige optimeerituim tase.
+
+Kompileerida on võimalik järgnevalt: 
+```bash
+emcc -O3 minu_fail.cpp
+```
 
 # Allikad
 
